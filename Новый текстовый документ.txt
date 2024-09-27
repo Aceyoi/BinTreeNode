@@ -1,0 +1,74 @@
+//Сапожников Юрий ИВТ-22
+#include<exception>
+#include <iostream>
+#include <cassert>
+
+//Элемент списка
+template<typename T>
+struct Node {
+	T value;       //Хранимое значение
+};
+using namespace std;
+
+template<typename T>
+class TreeNode {  //Название класса
+private:
+    Node<T> data;       // Данные узла
+    TreeNode<T>* left;  // Указатель на левую ветку
+    TreeNode<T>* right; // Указатель на правую ветку
+public:
+    ///Конструктор без параметров
+    TreeNode(T val) : data{ val }, left(nullptr), right(nullptr) {}
+
+    // Вставка значения в дерево
+    void pop(T val) {
+        if (val < data.value) {
+            if (left == nullptr) {
+                left = new TreeNode<T>(val);  // Вставляем в левую ветку
+            }
+            else {
+                left->pop(val);  // Рекурсивная вставка
+            }
+        }
+        else {
+            if (right == nullptr) {
+                right = new TreeNode<T>(val);  // Вставляем в правую ветку
+            }
+            else {
+                right->pop(val);  // Рекурсивная вставка
+            }
+        }
+    }
+    // Вспомогательная функция для отображения дерева (прямой обход)
+    void printTree(int level = 0) const {
+        if (right != nullptr) {
+            right->printTree(level + 1);  // Рекурсивный вывод правого поддерева
+        }
+        for (int i = 0; i < level; ++i) {
+            cout << "    ";  // Отступ для уровня дерева
+        }
+        cout << data.value << endl;  // Вывод значения узла
+        if (left != nullptr) {
+            left->printTree(level + 1);  // Рекурсивный вывод левого поддерева
+        }
+    }
+
+    // Удаление всех узлов 
+    void deleteTree() {
+        if (left != nullptr) {
+            left->deleteTree();  // Рекурсивное удаление левого поддерева
+            delete left;
+            left = nullptr;
+        }
+        if (right != nullptr) {
+            right->deleteTree();  // Рекурсивное удаление правого поддерева
+            delete right;
+            right = nullptr;
+        }
+    }
+
+    // Деструктор
+    ~TreeNode() {
+        deleteTree();  // Удаление дерева при уничтожении объекта
+    }
+};
